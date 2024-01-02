@@ -8,6 +8,7 @@ const Form = ({ coin }) => {
   const [result, setResult] = useState("");
 
   console.log("props========", coin);
+
   const [formData, setFormData] = useState({
     fromCurrency: "USD",
     toCurrency: "",
@@ -63,16 +64,11 @@ const Form = ({ coin }) => {
           {" "}
           Crypto Coin
         </option>
-        {crypto &&
-          crypto.map((coinEle) => (
-            <option
-              className="inpSelect"
-              key={coinEle.id}
-              value={coinEle.symbol}
-            >
-              {coinEle.name}
-            </option>
-          ))}
+        {coin?.map((coinEle) => (
+          <option className="inpSelect" key={coinEle.id} value={coinEle.symbol}>
+            {coinEle.name}
+          </option>
+        ))}
       </select>
       <br />
       <label htmlFor="fromCurrency">Select Regular Currency</label>
