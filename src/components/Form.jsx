@@ -3,10 +3,11 @@ import "../App.css";
 import { apiUrl } from "../context/link";
 import { useState, useEffect, useMemo } from "react";
 const Form = ({ coin }) => {
+  const [crypto, setCrypto] = useState(coin);
   const [err, setErr] = useState("");
   const [result, setResult] = useState("");
 
-  console.log("props", coin);
+  console.log("props========", coin);
   const [formData, setFormData] = useState({
     fromCurrency: "USD",
     toCurrency: "",
@@ -25,7 +26,9 @@ const Form = ({ coin }) => {
     event.preventDefault();
     console.log(formData);
     const { toCurrency, amount } = formData;
-
+    // if (toCurrency || amount == "") {
+    //   setErr("Please fill all fields!");
+    // }
     toCurrency === "" && setErr("Please Select Crypto Currency");
     amount === "" && setErr("Please Enter Amount");
     if (!amount || !toCurrency) return;
@@ -40,6 +43,7 @@ const Form = ({ coin }) => {
       setLoaderMsg("Fetching Real Time Price");
     }
     const resData = await response.json();
+    console.log(" response Submit ==", response);
 
     if (!response.ok) {
       setErr(resData.message);
@@ -59,11 +63,16 @@ const Form = ({ coin }) => {
           {" "}
           Crypto Coin
         </option>
-        {coin?.map((coinEle) => (
-          <option className="inpSelect" key={coinEle.id} value={coinEle.symbol}>
-            {coinEle.name}
-          </option>
-        ))}
+        {crypto &&
+          crypto.map((coinEle) => (
+            <option
+              className="inpSelect"
+              key={coinEle.id}
+              value={coinEle.symbol}
+            >
+              {coinEle.name}
+            </option>
+          ))}
       </select>
       <br />
       <label htmlFor="fromCurrency">Select Regular Currency</label>
@@ -101,7 +110,7 @@ const Form = ({ coin }) => {
         <p className="errMsg">{err}</p>
       ) : (
         <p className={result.result && "resultBox"}>
-          {result.result && `${formData.fromCurrency} - ${result.result}`}
+          {result.result && result.result}
         </p>
       )}
     </form>

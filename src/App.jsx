@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Form from "./components/Form";
+import { apiUrl } from "./context/link";
 import "./App.css";
 function App() {
   const [coin, setCoin] = useState([]);
@@ -8,11 +9,15 @@ function App() {
   useEffect(() => {
     const fetchCoins = async () => {
       try {
-        const data = await fetch("http://localhost:4500/fetch");
+        const data = await fetch(`${apiUrl}/fetch`);
         const coins = await data.json();
+        console.log(data);
 
-        setErr("");
-        setCoin(coins);
+        if (data.ok) {
+          setCoin(coins);
+        } else {
+          throw new Error("Could not get the coin list");
+        }
       } catch (error) {
         setErr("Error in API fetching data. Please try after Some time.");
         console.log("Error in API fetching data. Please try after Some time.");
@@ -20,7 +25,7 @@ function App() {
     };
     fetchCoins();
   }, []);
-  console.log("error from app==", err);
+
   return (
     <div className="main">
       <h2>Welcome to Crypto World</h2>
