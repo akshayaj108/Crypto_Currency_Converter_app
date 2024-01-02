@@ -3,7 +3,8 @@ import "../App.css";
 import { useState, useEffect, useMemo } from "react";
 const Form = ({ coin }) => {
   const [err, setErr] = useState("");
-  const [result, setResult] = useState(undefined);
+  const [result, setResult] = useState("");
+  const [loaderMsg, setLoaderMsg] = useState("");
   console.log("props", coin);
   const [formData, setFormData] = useState({
     fromCurrency: "USD",
@@ -15,29 +16,38 @@ const Form = ({ coin }) => {
     const { name, value } = event.target;
     console.log("form data==", name, " ", value);
     setErr("");
+    setResult("");
     setFormData({ ...formData, [name]: value });
   };
   //submit handler
-  const processSubmit = useMemo(
-    async (event) => {
-      event.preventDefault();
-      console.log(formData);
-      const response = await fetch("http://localhost:4500/fetch/convert", {
-        method: "post",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+  const processSubmit = async (event) => {
+    event.preventDefault();
+    console.log(formData);
+    const { toCurrency, amount } = formData;
+    // if (toCurrency || amount == "") {
+    //   setErr("Please fill all fields!");
+    // }
+    toCurrency === "" && setErr("Please Select Crypto Currency");
+    amount === "" && setErr("Please Enter Amount");
+    if (!amount || !toCurrency) return;
+    const response = await fetch("http://localhost:4500/fetch/convert", {
+      method: "post",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    if (!response) {
+      setLoaderMsg("Fetching Real Time Price");
+    }
+    const resData = await response.json();
+    console.log(" response Submit ==", response);
 
-      const resData = await response.json();
-      if (!response.ok) {
-        setErr(resData.message);
-      }
-      return setResult(resData);
-    },
-    [result.result]
-  );
+    if (!response.ok) {
+      setErr(resData.message);
+    }
+    setResult(resData);
+  };
   return (
     <form className="formDesign" onSubmit={processSubmit}>
       <label htmlFor="toCurrency">Select Cryptocurrency</label>
@@ -87,13 +97,15 @@ const Form = ({ coin }) => {
       />
       <br />
       <br />
-      <input type="submit" />
-      {result ? (
-        <p className="resultBox">{result.result}</p>
+      <input className="btn" type="submit" />
+
+      {err ? (
+        <p className="errMsg">{err}</p>
       ) : (
-        <p>Fetching Latest Price</p>
+        <p className={result.result && "resultBox"}>
+          {result.result && result.result}
+        </p>
       )}
-      {err && <p style={{ color: "red" }}>{err}</p>}
     </form>
   );
 };
