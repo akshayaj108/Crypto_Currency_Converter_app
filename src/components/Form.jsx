@@ -3,11 +3,10 @@ import "../App.css";
 import { apiUrl } from "../context/link";
 import { useState, useEffect, useMemo } from "react";
 const Form = ({ coin }) => {
-  const [crypto, setCrypto] = useState(coin);
   const [err, setErr] = useState("");
   const [result, setResult] = useState("");
 
-  console.log("props========", coin);
+  // console.log("props========", coin);
 
   const [formData, setFormData] = useState({
     fromCurrency: "USD",
@@ -44,7 +43,7 @@ const Form = ({ coin }) => {
       setLoaderMsg("Fetching Real Time Price");
     }
     const resData = await response.json();
-    console.log(" response Submit ==", response);
+    // console.log(" response Submit ==", response);
 
     if (!response.ok) {
       setErr(resData.message);
@@ -106,7 +105,8 @@ const Form = ({ coin }) => {
         <p className="errMsg">{err}</p>
       ) : (
         <p className={result.result && "resultBox"}>
-          {result.result && result.result}
+          {result.result &&
+            `${toCurrency} ${formData.fromCurrency} - ${result.result}`}
         </p>
       )}
     </form>

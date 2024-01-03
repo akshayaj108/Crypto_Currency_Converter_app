@@ -16,7 +16,7 @@ function App() {
         if (data.ok) {
           setCoin(coins);
         } else {
-          throw new Error("Could not get the coin list");
+          setErr("Error in API fetching data. Please try after Some time.");
         }
       } catch (error) {
         setErr("Error in API fetching data. Please try after Some time.");
