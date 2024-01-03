@@ -3,6 +3,7 @@ import "../App.css";
 import { apiUrl } from "../context/link";
 import { useState, useEffect, useMemo } from "react";
 const Form = ({ coin }) => {
+  const [crypto, setCrypto] = useState(coin);
   const [err, setErr] = useState("");
   const [result, setResult] = useState("");
 
@@ -106,7 +107,11 @@ const Form = ({ coin }) => {
       ) : (
         <p className={result.result && "resultBox"}>
           {result.result &&
-            `${toCurrency} ${formData.fromCurrency} - ${result.result}`}
+            formData.amount +
+              " " +
+              formData.fromCurrency +
+              " - " +
+              result.result}
         </p>
       )}
     </form>
